@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.phetolo.Financeapi.dto.TransactionDTO;
 import com.phetolo.Financeapi.model.Transaction;
 import com.phetolo.Financeapi.service.TransactionServices;
 
@@ -23,12 +24,12 @@ public class TransactionController {
 	}
 	
 	@GetMapping
-	public List<Transaction> getAll(@PathVariable Long userId){
+	public List<TransactionDTO> getAll(@PathVariable Long userId){
 		return transactionService.getUserTransactions(userId);
 	}
 	
 	@PostMapping
-	public Transaction addTransactions(@PathVariable Long userId,@RequestBody Transaction t) {
+	public TransactionDTO addTransactions(@PathVariable Long userId,@RequestBody TransactionDTO t) {
 		return transactionService.addTransaction(userId, t);
 	}
 	

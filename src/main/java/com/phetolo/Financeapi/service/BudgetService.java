@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.phetolo.Financeapi.dto.BudgetDTO;
+import com.phetolo.Financeapi.mapper.BudgetMapper;
 import com.phetolo.Financeapi.model.Budget;
 import com.phetolo.Financeapi.model.User;
 import com.phetolo.Financeapi.repository.BudgetRepository;
@@ -20,29 +22,31 @@ public class BudgetService {
 		this.Urepo = Urepo;
 	}
 	
-	public Budget createBudget(Long userId,Budget b) {
+	public BudgetDTO createBudget(Long userId,BudgetDTO b) {
 		Optional<User> user = Urepo.findById(userId);
 		
 		Budget existing = Brepo.findByUserIdAndCategoryAndMonth(userId, b.getCategory(), b.getMonth());
 		if(existing!= null) {
 			throw new RuntimeException("The Budget already exists");
 		}
-		b.setUser(user.get());
-		return Brepo.save(b);
+		Budget budget = BudgetMapper.mapToEntity(b);
+		budget.setUser(user.get());
+		return BudgetMapper.mapToDto(Brepo.save(budget));
 	}
 	
-	public List<Budget> getUserBudgets(Long userId){
-		return (budgets = Brepo.findByUserId(userId));
+	public List<BudgetDTO> getUserBudgets(Long userId){
+		budgets = Brepo.findByUserId(userId);
+		return budgets.stream().map(BudgetMapper::mapToDto).toList();
 	}
 	
-	public Budget updateBudget(Long userId, Long budgetId, Budget updatedBudget) {
+	public BudgetDTO updateBudget(Long userId, Long budgetId, BudgetDTO updatedBudget) {
 		Optional<Budget> b = Brepo.findById(budgetId);
 		
 		if(b.get().getUser().getId()!=userId) {
 			throw new RuntimeException("Unauthorized");
 		}
 		b.get().setMonthlyLimit(updatedBudget.getMonthlyLimit());
-		return Brepo.save(b.get());
+		return BudgetMapper.mapToDto(Brepo.save(b.get()));
 	}
 	
 	public void deleteBudget(Long userId, Long budgetId) {

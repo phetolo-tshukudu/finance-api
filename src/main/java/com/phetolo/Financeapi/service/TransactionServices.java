@@ -9,7 +9,9 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.phetolo.Financeapi.dto.TransactionDTO;
 import com.phetolo.Financeapi.enums.TransactionType;
+import com.phetolo.Financeapi.mapper.TransactionMapper;
 import com.phetolo.Financeapi.model.Transaction;
 import com.phetolo.Financeapi.model.User;
 import com.phetolo.Financeapi.repository.TransactionRepository;
@@ -25,22 +27,23 @@ public class TransactionServices {
 		this.Urepo = Urepo;
 	}
 	
-	public Transaction addTransaction(Long id, Transaction transaction) {
+	public TransactionDTO addTransaction(Long id, TransactionDTO transaction) {
 		Optional<User> user = Urepo.findById(id);
-		
-		transaction.setUser(user.get());
-		return Trepo.save(transaction);
+		Transaction t = TransactionMapper.mapToEntity(transaction);
+		t.setUser(user.get());
+		return TransactionMapper.mapToDto(Trepo.save(t));
 		
 	}
 	
-	public List<Transaction> getUserTransactions(Long userId){
-		return( userTransactions = Trepo.findByUserId(userId));
+	public List<TransactionDTO> getUserTransactions(Long userId){
+		userTransactions = Trepo.findByUserId(userId);
+		return userTransactions.stream().map(TransactionMapper::mapToDto).toList();
 	}
 	
-	public List<Transaction> getTransactionsByMonth(Long userId, YearMonth month) {
+	public List<TransactionDTO> getTransactionsByMonth(Long userId, YearMonth month) {
 	    int year = month.getYear();
 	    int m = month.getMonthValue();
-	    return Trepo.findByUserIdAndMonth(userId, m, year);
+	    return Trepo.findByUserIdAndMonth(userId, m, year).stream().map(TransactionMapper::mapToDto).toList();
 	}
 	
 	public Double calculateTotalIncome(Long userId) {

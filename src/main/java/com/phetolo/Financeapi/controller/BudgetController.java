@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.phetolo.Financeapi.dto.BudgetDTO;
 import com.phetolo.Financeapi.model.Budget;
 import com.phetolo.Financeapi.service.BudgetService;
 
@@ -24,17 +25,17 @@ public class BudgetController {
 	}
 	
 	@PostMapping
-	public Budget createBudget(@PathVariable Long userId,@RequestBody Budget b) {
+	public BudgetDTO createBudget(@PathVariable Long userId,@RequestBody BudgetDTO b) {
 		return budgetService.createBudget(userId, b);
 	}
 	
 	@GetMapping
-	public List<Budget> getBudgets(Long userId){
+	public List<BudgetDTO> getBudgets(Long userId){
 		return budgetService.getUserBudgets(userId);
 	}
 	
 	@PutMapping("/{id}")
-	public Budget updateBudget(@PathVariable Long userId,@PathVariable Long id, @RequestBody Budget b) {
+	public BudgetDTO updateBudget(@PathVariable Long userId,@PathVariable Long id, @RequestBody BudgetDTO b) {
 		return budgetService.updateBudget(userId, id, b);
 	}
 	
