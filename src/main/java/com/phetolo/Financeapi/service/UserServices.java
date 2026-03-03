@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.phetolo.Financeapi.exception.IllegalEntityException;
+import com.phetolo.Financeapi.exception.UserNotFoundException;
 import com.phetolo.Financeapi.model.User;
 import com.phetolo.Financeapi.repository.UserRepository;
 
@@ -25,7 +26,7 @@ public class UserServices {
 	
 	public void deactivateUser(User user) throws IllegalEntityException {
 		if(Urepo.existsByEmail(user.getEmail())) {
-			throw new IllegalEntityException("Cannot Deelete. "+user+" does not exists");
+			throw new UserNotFoundException("Cannot Deelete. "+user+" does not exists");
 		}
 		Urepo.delete(user);
 	}
@@ -44,7 +45,8 @@ public class UserServices {
 	}
 	
 	public List<User> getAll(){
-		return Urepo.findAll();
+		registeredUsers = Urepo.findAll();
+		return registeredUsers;
 	}
 	
 }

@@ -1,35 +1,41 @@
 package com.phetolo.Financeapi.service;
 
 import java.time.YearMonth;
-import java.util.ArrayList;
-import java.util.HashMap;
+
 import java.util.List;
-import java.util.Map;
+
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.phetolo.Financeapi.dto.TransactionDTO;
 import com.phetolo.Financeapi.enums.TransactionType;
+import com.phetolo.Financeapi.exception.BudgetExceededException;
 import com.phetolo.Financeapi.mapper.TransactionMapper;
 import com.phetolo.Financeapi.model.Transaction;
 import com.phetolo.Financeapi.model.User;
+import com.phetolo.Financeapi.repository.BudgetRepository;
 import com.phetolo.Financeapi.repository.TransactionRepository;
 import com.phetolo.Financeapi.repository.UserRepository;
 @Service
 public class TransactionServices {
 	private TransactionRepository Trepo;
 	private UserRepository Urepo;
+	private BudgetRepository Brepo;
 	private List<Transaction> userTransactions;
 	
-	public TransactionServices(TransactionRepository Trepo, UserRepository Urepo) {
+	public TransactionServices(TransactionRepository Trepo, UserRepository Urepo,BudgetRepository Brepo) {
 		this.Trepo = Trepo;
 		this.Urepo = Urepo;
+		this.Brepo=Brepo;
 	}
 	
-	public TransactionDTO addTransaction(Long id, TransactionDTO transaction) {
+	public TransactionDTO addTransaction(Long id, TransactionDTO transaction) throws BudgetExceededException {
 		Optional<User> user = Urepo.findById(id);
 		Transaction t = TransactionMapper.mapToEntity(transaction);
+		if((calculateBalance(id) + t.getAmount().doubleValue() ) > Brepo.findById(id).get().getMonthlyLimit().doubleValue()) {
+			throw new BudgetExceededException("User: "+ user.get().getName()+" budget exceeded");
+		}
 		t.setUser(user.get());
 		return TransactionMapper.mapToDto(Trepo.save(t));
 		

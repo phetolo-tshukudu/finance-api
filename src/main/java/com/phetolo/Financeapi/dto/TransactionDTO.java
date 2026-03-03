@@ -6,13 +6,24 @@ import java.time.LocalDate;
 import com.phetolo.Financeapi.enums.TransactionStatus;
 import com.phetolo.Financeapi.enums.TransactionType;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
 public class TransactionDTO {
 	private Long id;
+	@NotNull(message="Amount required")
+	@Positive(message="Amount cannot be negative")
 	private BigDecimal amount;
+	@NotNull(message="Transaction Type needed")
 	private TransactionType type;
+	@NotBlank(message="Category cannot be empty")
 	private String Category;
+	
 	private String description;
+	
 	private LocalDate date;
+	@NotNull(message="Transaction status needed")
 	private TransactionStatus status;
 	
 	public TransactionDTO(Long id, BigDecimal amount, TransactionType type, String category, String description,

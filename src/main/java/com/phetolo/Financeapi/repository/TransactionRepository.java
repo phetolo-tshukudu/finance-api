@@ -1,6 +1,6 @@
 package com.phetolo.Financeapi.repository;
 
-import java.time.YearMonth;
+
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;

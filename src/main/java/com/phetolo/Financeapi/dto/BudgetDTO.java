@@ -3,14 +3,21 @@ package com.phetolo.Financeapi.dto;
 import java.math.BigDecimal;
 import java.time.YearMonth;
 
-import com.phetolo.Financeapi.model.User;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
+
 
 
 
 public class BudgetDTO {
-private Long id;
 	
+private Long id;
+	@NotBlank(message="Category needed")
 	private String Category;
+	@NotNull(message="Amount cannot be null")
+	@Positive(message="Amount must be negative")
 	private BigDecimal monthlyLimit;
 	private YearMonth month;
 	

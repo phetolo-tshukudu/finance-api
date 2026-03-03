@@ -2,6 +2,8 @@ package com.phetolo.Financeapi.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,7 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.phetolo.Financeapi.model.User;
+import com.phetolo.Financeapi.payload.ApiResponse;
 import com.phetolo.Financeapi.service.UserServices;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/users")
@@ -22,27 +27,34 @@ public class UserController {
 	}
 	
 	@GetMapping
-	public List<User> getAllUsers(){
-		return userServices.getAll();
+	public ResponseEntity<ApiResponse<List<User>>>  getAllUsers(){
+		ApiResponse<List<User>> response = new ApiResponse<>(HttpStatus.FOUND.value(), "Users found", userServices.getAll());
+		return new ResponseEntity<>(response,HttpStatus.FOUND);
 	}
 	
 	@GetMapping("/{id}")
-	public User getUserById(@PathVariable Long userId) {
-		return userServices.findById(userId);
+	public ResponseEntity<ApiResponse<User>> getUserById(@PathVariable Long userId) {
+		ApiResponse<User> response = new ApiResponse<>(HttpStatus.FOUND.value(), "User found", userServices.findById(userId));
+		return new ResponseEntity<>(response,HttpStatus.FOUND);
 	}
 	
 	@GetMapping("/{email}")
-	public User getUserByEmail(@PathVariable String email) {
-		return userServices.findUserByEmail(email);
+	public ResponseEntity<ApiResponse<User>> getUserByEmail(@PathVariable String email) {
+		ApiResponse<User> response = new ApiResponse<>(HttpStatus.FOUND.value(), "User found", userServices.findUserByEmail(email));
+		return new ResponseEntity<>(response,HttpStatus.FOUND);
 	}
 	
 	@GetMapping("/summary")
-	public String getSummary(@PathVariable Long userId) {
-		return userServices.getUserSummary(userServices.findById(userId));
+	public ResponseEntity<ApiResponse<String>> getSummary(@PathVariable Long userId) {
+		ApiResponse<String> response = new ApiResponse<>(HttpStatus.FOUND.value(), "User found", userServices.findById(userId).toString());
+		return new ResponseEntity<>(response,HttpStatus.FOUND);
 	}
 	
 	@PostMapping
-    public User createUser(@RequestBody User user) {
-        return userServices.registerUser(user);
+    public ResponseEntity<ApiResponse<User>> createUser(@Valid @RequestBody User user)
+	{
+		
+		ApiResponse<User> response = new ApiResponse<>(HttpStatus.CREATED.value(), "User created", userServices.registerUser(user));
+		return new ResponseEntity<>(response,HttpStatus.CREATED);
     }
 }
