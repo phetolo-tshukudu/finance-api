@@ -1,120 +1,181 @@
-# Finance Tracker API
+# FinanceAPI
 
 ## Overview
-The Finance Tracker API is a RESTful backend application that allows users to manage and track their financial transactions such as income and expenses.
 
-The API provides endpoints for creating, retrieving, and managing financial records while following a clean layered architecture.
+**FinanceAPI** is a RESTful backend application designed to manage personal finances. It provides endpoints to:
 
-This project was built to practice real-world backend development concepts such as REST API design, database integration, DTO validation, and structured application architecture.
+- Create, read, update, and delete transactions
+- Track budgets
+- Analyze spending using statistical calculations (mean, variance, standard deviation, totals)
+- Export transactions as CSV files
+
+This project demonstrates **clean layered architecture**, **database integration**, and **real-world backend development skills**.
 
 ---
 
 ## Features
 
-- Create financial transactions
-- View all recorded transactions
-- Categorize income and expenses
-- Track budgets by category
-- Persistent storage using a relational database
-- Input validation using DTOs
+- CRUD operations for transactions and budgets
+- Analytics and statistics on user transactions
+- CSV export of transactions
+- DTO validation for secure data transfer
 - Layered architecture (Controller → Service → Repository)
-- RESTful API endpoints
+- Enum types for transaction status and type
+- Payload and API response wrappers
 
 ---
 
 ## Tech Stack
 
-Backend
+**Backend**
+
 - Java
 - Spring Boot
 - Spring Web
 - Spring Data JPA
 - Hibernate
 
-Database
+**Database**
+
 - MySQL / PostgreSQL
 
-Build Tool
+**Build Tool**
+
 - Maven
 
-Testing
-- Postman
+**Testing / API Interaction**
+
+- Postman, cURL, or frontend client
 
 ---
 
 ## Project Structure
 
-src/main/java/com/yourpackage/financetracker
+
+src/main/java/com/phetolo/Financeapi
+
+FinanceapiApplication.java # Main Spring Boot application class
 
 controller
-- TransactionController
-
-service
-- TransactionService
-
-repository
-- TransactionRepository
-
-model
-- Transaction
+AnalyticsController.java # Endpoints for statistics/analytics
+BudgetController.java # Budget CRUD endpoints
+ExportController.java # CSV export endpoints
+TransactionController.java # Transaction CRUD endpoints
+UserController.java # User management endpoints
 
 dto
-- TransactionDTO
+BudgetDTO.java
+StatisticDTO.java # Statistics response DTO
+TransactionDTO.java
+UserDTO.java
 
-FinanceTrackerApplication
+enums
+TransactionStatus.java # e.g., PENDING, COMPLETED
+TransactionType.java # e.g., INCOME, EXPENSE
 
-The application follows a layered architecture:
+exception
+(custom exceptions for error handling)
 
-Controller → Service → Repository → Database
+mapper
+BudgetMapper.java
+TransactionMapper.java
+
+model
+Budget.java
+Transaction.java
+User.java
+
+payload
+ApiResponse.java # Generic API response wrapper
+
+repository
+BudgetRepository.java
+TransactionRepository.java
+UserRepository.java
+
+service
+AnalyticsService.java # Business logic for statistics
+BudgetService.java
+ExportService.java # CSV export logic
+TransactionService.java
+UserService.java
+
+
+---
+
+## Core Entities
+
+### User
+Represents an account owning transactions and budgets.
+
+- `id`
+- `username`
+- `email`
+- `password`
+
+### Transaction
+Represents a financial record.
+
+- `id`
+- `amount` (BigDecimal)
+- `category`
+- `type` (TransactionType enum)
+- `status` (TransactionStatus enum)
+- `description`
+- `date`
+- `userId`
+
+### Budget
+Tracks spending limits for a category.
+
+- `id`
+- `category`
+- `monthlyLimit`
+- `userId`
 
 ---
 
 ## API Endpoints
 
-Create Transaction
+### Transactions
 
-POST /transactions
+- `POST /transactions` – Create a new transaction  
+- `GET /transactions` – Get all transactions  
+- `GET /transactions/{id}` – Get a transaction by ID  
+- `DELETE /transactions/{id}` – Delete a transaction  
 
-Example request body
+### Analytics
 
-{
-  "amount": 250,
-  "category": "Groceries",
-  "description": "Weekly shopping",
-  "date": "2026-02-25"
-}
+- `GET /analytics/statistics?userId={id}` – Get statistics (mean, variance, std dev, sum, min, max, count)
 
----
+### CSV Export
 
-Get All Transactions
+- `GET /export/transactions/csv/{userId}` – Download a CSV file of transactions
 
-GET /transactions
+### Budgets
 
-Returns a list of stored transactions.
+- `POST /budgets` – Create a new budget  
+- `GET /budgets` – Get all budgets  
+- `GET /budgets/{id}` – Get a budget by ID  
+- `DELETE /budgets/{id}` – Delete a budget  
 
----
+### Users
 
-Get Transaction by ID
-
-GET /transactions/{id}
-
----
-
-Delete Transaction
-
-DELETE /transactions/{id}
+- `POST /users` – Register a new user  
+- `GET /users/{id}` – Get user details  
 
 ---
 
 ## Running the Project
 
-1. Clone the repository
+### 1. Clone the repository
 
-git clone https://github.com/yourusername/finance-tracker-api.git
+```bash
+git clone https://github.com/yourusername/FinanceAPI.git
 
 2. Navigate into the project
 
-cd finance-tracker-api
+cd financeapi
 
 3. Configure the database
 
@@ -147,7 +208,7 @@ You can test the API using:
 
 Example request
 
-GET http://localhost:8080/transactions
+GET http://localhost:8080/users/{userId}/transactions
 
 ---
 
@@ -166,12 +227,19 @@ GET http://localhost:8080/transactions
 
 This project focuses on developing backend engineering skills including:
 
-- REST API design
-- Spring Boot application development
-- Database integration with JPA
-- Clean architecture principles
-- DTO validation
-- Git and GitHub workflow
+REST API design
+
+Clean layered architecture
+
+Database integration using JPA
+
+Statistics and financial analytics
+
+File export features
+
+DTO and payload usage for secure API responses
+
+Git and GitHub workflow
 
 ---
 
