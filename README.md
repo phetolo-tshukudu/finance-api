@@ -57,48 +57,48 @@ src/main/java/com/phetolo/Financeapi
 FinanceapiApplication.java # Main Spring Boot application class
 
 controller
-AnalyticsController.java # Endpoints for statistics/analytics
-BudgetController.java # Budget CRUD endpoints
-ExportController.java # CSV export endpoints
-TransactionController.java # Transaction CRUD endpoints
-UserController.java # User management endpoints
+-AnalyticsController.java # Endpoints for statistics/analytics
+-BudgetController.java # Budget CRUD endpoints
+-ExportController.java # CSV export endpoints
+-TransactionController.java # Transaction CRUD endpoints
+-UserController.java # User management endpoints
 
 dto
 BudgetDTO.java
-StatisticDTO.java # Statistics response DTO
-TransactionDTO.java
-UserDTO.java
+-StatisticDTO.java # Statistics response DTO
+-TransactionDTO.java
+-UserDTO.java
 
 enums
-TransactionStatus.java # e.g., PENDING, COMPLETED
-TransactionType.java # e.g., INCOME, EXPENSE
+-TransactionStatus.java # e.g., PENDING, COMPLETED
+-TransactionType.java # e.g., INCOME, EXPENSE
 
 exception
-(custom exceptions for error handling)
+-(custom exceptions for error handling)
 
 mapper
-BudgetMapper.java
-TransactionMapper.java
+-BudgetMapper.java
+-TransactionMapper.java
 
 model
-Budget.java
-Transaction.java
-User.java
+-Budget.java
+-Transaction.java
+-User.java
 
 payload
-ApiResponse.java # Generic API response wrapper
+-ApiResponse.java # Generic API response wrapper
 
 repository
-BudgetRepository.java
-TransactionRepository.java
-UserRepository.java
+-BudgetRepository.java
+-TransactionRepository.java
+-UserRepository.java
 
 service
-AnalyticsService.java # Business logic for statistics
-BudgetService.java
-ExportService.java # CSV export logic
-TransactionService.java
-UserService.java
+-AnalyticsService.java # Business logic for statistics
+-BudgetService.java
+-ExportService.java # CSV export logic
+-TransactionService.java
+-UserService.java
 
 
 ---
@@ -154,10 +154,10 @@ Tracks spending limits for a category.
 
 ### Budgets
 
-- `POST /budgets` – Create a new budget  
-- `GET /budgets` – Get all budgets  
-- `GET /budgets/{id}` – Get a budget by ID  
-- `DELETE /budgets/{id}` – Delete a budget  
+- `POST /users/{userId}/budgets` – Create a new budget  
+- `GET /users/{userId}/budgets` – Get all budgets  
+- `GET /users/{userId}/budgets/{id}` – Get a budget by ID  
+- `DELETE /users/{userId}/budgets/{id}` – Delete a budget  
 
 ### Users
 
@@ -225,21 +225,14 @@ GET http://localhost:8080/users/{userId}/transactions
 
 ## Learning Goals
 
-This project focuses on developing backend engineering skills including:
-
-REST API design
-
-Clean layered architecture
-
-Database integration using JPA
-
-Statistics and financial analytics
-
-File export features
-
-DTO and payload usage for secure API responses
-
-Git and GitHub workflow
+-This project focuses on developing backend engineering skills including:
+-REST API design
+-Clean layered architecture
+-Database integration using JPA
+-Statistics and financial analytics
+-File export features
+-DTO and payload usage for secure API responses
+-Git and GitHub workflow
 
 ---
 
