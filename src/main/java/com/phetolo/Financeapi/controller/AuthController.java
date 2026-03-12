@@ -1,9 +1,14 @@
 package com.phetolo.Financeapi.controller;
 
+import java.beans.Encoder;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,7 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.phetolo.Financeapi.dto.AuthResponse;
 import com.phetolo.Financeapi.dto.LoginRequest;
-import com.phetolo.Financeapi.payload.ApiResponse;
+import com.phetolo.Financeapi.dto.RegisterRequest;
+import com.phetolo.Financeapi.model.User;
+import com.phetolo.Financeapi.repository.UserRepository;
 import com.phetolo.Financeapi.security.JwtService;
 
 @RestController
@@ -19,18 +26,41 @@ import com.phetolo.Financeapi.security.JwtService;
 public class AuthController {
 	private AuthenticationManager manager;
 	private JwtService jwtService;
+	private UserRepository Urepo;
 	
-	public AuthController(AuthenticationManager manager, JwtService jwtService) {
+	public AuthController(AuthenticationManager manager, JwtService jwtService,UserRepository Urepo) {
 		this.manager = manager;
 		this.jwtService = jwtService;
+		this.Urepo = Urepo;
 	}
 	
 	@PostMapping("/login")
-	public ResponseEntity<ApiResponse<AuthResponse>> login(@RequestBody LoginRequest request){
+	public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request){
+		System.out.println("Logging in....");
+		System.out.println(request.getUsername());
+		
+		try {
 		manager.authenticate(
 				new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+		}catch(Exception ex) {
+			ex.printStackTrace();
+		}
+		System.out.println("Token generated");
 		String token = jwtService.generateToken(request.getUsername());
-		ApiResponse<AuthResponse> response = new ApiResponse<>(HttpStatus.ACCEPTED.value(), "Username and Password accepted", new AuthResponse(token));
-		return new ResponseEntity<>(response,HttpStatus.ACCEPTED);
+		System.out.println("Token generated");
+		return ResponseEntity.ok(new AuthResponse(token));
+	}
+	
+	@PostMapping("/register")
+	public ResponseEntity<?> register(@RequestBody RegisterRequest request){
+		PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		String encodedPass = passwordEncoder.encode(request.getPassword());
+		
+		User user = new User();
+		user.setEmail(request.getUsername());
+		user.setPassword(encodedPass);
+		
+		Urepo.save(user);
+		return ResponseEntity.ok("User registered Successfully");
 	}
 }

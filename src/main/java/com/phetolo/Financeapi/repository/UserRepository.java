@@ -1,5 +1,7 @@
 package com.phetolo.Financeapi.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -7,7 +9,7 @@ import com.phetolo.Financeapi.model.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User,Long>{
-	User findByEmail(String emial);
+	Optional<User> findByEmail(String email);
 	boolean existsByEmail(String email);
 	
 }

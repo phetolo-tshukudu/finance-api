@@ -32,7 +32,7 @@ public class UserServices {
 	}
 	
 	public User findUserByEmail(String email) {
-		return Urepo.findByEmail(email);
+		return Urepo.findByEmail(email).get();
 	}
 	
 	public User findById(Long id) {

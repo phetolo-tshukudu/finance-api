@@ -19,7 +19,7 @@ public class User {
 	
 	private  String name;
 	@Column(unique = true)
-	private String Email;
+	private String email;
 	
 	private String password;
 	private LocalDateTime createdAt;
@@ -30,7 +30,7 @@ public class User {
 	public User(long id, String name, String email, String password, LocalDateTime createdAt, boolean active) {
 		this.id = id;
 		this.name = name;
-		Email = email;
+		this.email = email;
 		this.password = password;
 		this.createdAt = createdAt;
 		this.active = active;
@@ -39,7 +39,7 @@ public class User {
 	
 	public User(String name, String email, String password, LocalDateTime createdAt, boolean active) {
 		this.name = name;
-		Email = email;
+		this.email = email;
 		this.password = password;
 		this.createdAt = createdAt;
 		this.active = active;
@@ -66,11 +66,11 @@ public class User {
 	}
 
 	public String getEmail() {
-		return Email;
+		return email;
 	}
 
 	public void setEmail(String email) {
-		Email = email;
+		this.email = email;
 	}
 
 	public String getPassword() {
@@ -102,7 +102,7 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", name=" + name + ", Email=" + Email + ", password=" + password + ", createdAt="
+		return "User [id=" + id + ", name=" + name + ", Email=" + email + ", password=" + password + ", createdAt="
 				+ createdAt + ", active=" + active + "]";
 	}
 	
