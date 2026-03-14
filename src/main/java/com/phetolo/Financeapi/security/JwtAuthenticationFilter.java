@@ -4,6 +4,7 @@ import java.util.List;
 import java.io.IOException;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -41,13 +42,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 	                                HttpServletResponse response,
 	                                FilterChain filterChain)
 	        throws ServletException, IOException {
-		System.out.println("Perfoming filter...");
+		
 	    if (request.getServletPath().contains("/auth")) {
-	    	System.out.println("Perfoming filter... in the if ");
+	    	
 	        filterChain.doFilter(request, response);
 	        return;
 	    }
-	    System.out.println("Perfoming filter...: after the if");
+	    
 	    String authHeader = request.getHeader("Authorization");
 
 	    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -60,17 +61,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 	    String username = jwtService.extractUsername(token);
 
 	    if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-	    	System.out.println("loading.");
-	        if (jwtService.isTokenValid(token)) {
-	        	UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-	        	System.out.println("loading..");
+	    	
+	    	UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+	        if (jwtService.isTokenValid(token,userDetails)) {
+	        	
+	        	String roleFromToken = jwtService.extractRole(token);
+	        	if (roleFromToken == null || roleFromToken.isEmpty()) {
+	        	    roleFromToken = "ROLE_USER";
+	        	} else if (!roleFromToken.startsWith("ROLE_")) {
+	        	    roleFromToken = "ROLE_" + roleFromToken;
+	        	}
 	        	UsernamePasswordAuthenticationToken authentication =
 	                    new UsernamePasswordAuthenticationToken(
 	                    		userDetails,
 	                            null,
-	                            userDetails.getAuthorities()
+	                            List.of(new SimpleGrantedAuthority(roleFromToken))//issue here 
 	                    );
-	        	System.out.println("loading...");
+	        	
 	            SecurityContextHolder.getContext().setAuthentication(authentication);
 	        }
 	    }

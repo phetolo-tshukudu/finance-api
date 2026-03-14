@@ -52,7 +52,11 @@ public class Transaction {
 		this.date = date;
 		this.status = status;
 		this.user = user;
+		
 	}
+	
+
+	
 
 	public Transaction() {
 	}

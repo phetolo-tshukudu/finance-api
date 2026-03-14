@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.phetolo.Financeapi.enums.Role;
 import com.phetolo.Financeapi.exception.IllegalEntityException;
 import com.phetolo.Financeapi.exception.UserNotFoundException;
 import com.phetolo.Financeapi.model.User;
@@ -20,7 +21,7 @@ public class UserServices {
 	}
 	
 	public User registerUser(User user) {
-		
+		user.setRole(Role.USER);
 		return Urepo.save(user);
 	}
 	

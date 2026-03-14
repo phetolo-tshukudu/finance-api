@@ -1,9 +1,12 @@
 package com.phetolo.Financeapi.model;
 import java.time.LocalDateTime;
 
+import com.phetolo.Financeapi.enums.Role;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -24,6 +27,8 @@ public class User {
 	private String password;
 	private LocalDateTime createdAt;
 	private boolean active;
+	@Enumerated(EnumType.STRING)
+	private Role role;
 	
 	
 	
@@ -99,11 +104,21 @@ public class User {
 		this.active = active;
 	}
 
+	
+	public Role getRole() {
+		return role;
+	}
+
+
+	public void setRole(Role role) {
+		this.role = role;
+	}
+
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", name=" + name + ", Email=" + email + ", password=" + password + ", createdAt="
-				+ createdAt + ", active=" + active + "]";
+		return "User [id=" + id + ", name=" + name + ", email=" + email + ", password=" + password + ", createdAt="
+				+ createdAt + ", active=" + active + ", role=" + role + "]";
 	}
 	
 	

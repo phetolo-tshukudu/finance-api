@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,40 +16,47 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.phetolo.Financeapi.dto.TransactionDTO;
 import com.phetolo.Financeapi.exception.BudgetExceededException;
+import com.phetolo.Financeapi.model.User;
 import com.phetolo.Financeapi.payload.ApiResponse;
+import com.phetolo.Financeapi.repository.UserRepository;
 import com.phetolo.Financeapi.service.TransactionServices;
 
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("users/{userId}/transactions")
+@RequestMapping("/transactions")
 public class TransactionController {
 	private TransactionServices transactionService;
+	private UserRepository userRepo;
 	
-	public TransactionController(TransactionServices transactionService) {
+	public TransactionController(TransactionServices transactionService,UserRepository userRepo) {
 		this.transactionService = transactionService;
+		this.userRepo = userRepo;
 	}
 	
 	@GetMapping
-	public ResponseEntity<ApiResponse<List<TransactionDTO>>> getAll(@PathVariable Long userId){
-		ApiResponse<List<TransactionDTO>> response = new ApiResponse<>(HttpStatus.FOUND.value(), "Transactions found", transactionService.getUserTransactions(userId));
+	public ResponseEntity<ApiResponse<List<TransactionDTO>>> getAll(@AuthenticationPrincipal UserDetails userdetails){
+		User user = userRepo.getByEmail(userdetails.getUsername());
+		ApiResponse<List<TransactionDTO>> response = new ApiResponse<>(HttpStatus.FOUND.value(), "Transactions found", transactionService.getUserTransactions(user.getId()));
 		return new ResponseEntity<>(response,HttpStatus.FOUND);
 	}
 	
 	@PostMapping
-	public ResponseEntity<ApiResponse<TransactionDTO>> addTransactions(@PathVariable Long userId,@Valid @RequestBody TransactionDTO t) throws BudgetExceededException {
-		ApiResponse<TransactionDTO> response = new ApiResponse<>(HttpStatus.CREATED.value(), "Transaction added", transactionService.addTransaction(userId, t));
+	public ResponseEntity<ApiResponse<TransactionDTO>> addTransactions(@AuthenticationPrincipal UserDetails userdetails,@Valid @RequestBody TransactionDTO t) throws BudgetExceededException {
+		User user = userRepo.getByEmail(userdetails.getUsername());
+		ApiResponse<TransactionDTO> response = new ApiResponse<>(HttpStatus.CREATED.value(), "Transaction added", transactionService.addTransaction(user.getId(), t));
 		return new ResponseEntity<>(response,HttpStatus.CREATED);
 	}
 	
 	@GetMapping("/balance")
-	public Double getBalannce(@PathVariable Long userId) {
-		return transactionService.calculateBalance(userId);
+	public Double getBalannce(@AuthenticationPrincipal UserDetails userdetails) {
+		User user = userRepo.getByEmail(userdetails.getUsername());
+		return transactionService.calculateBalance(user.getId());
 	}
 	
 	@DeleteMapping("/{id}")
-	public void deleteTransaction(@PathVariable Long id,@PathVariable Long userId) {
-		
-		 transactionService.deleteTransaction(userId, id);
+	public void deleteTransaction(@AuthenticationPrincipal UserDetails userdetails,@PathVariable Long id) {
+		User user = userRepo.getByEmail(userdetails.getUsername());
+		 transactionService.deleteTransaction(user.getId(), id);
 	}
 }

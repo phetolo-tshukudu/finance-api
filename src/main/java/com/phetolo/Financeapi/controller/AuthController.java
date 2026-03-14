@@ -1,11 +1,13 @@
 package com.phetolo.Financeapi.controller;
 
 import java.beans.Encoder;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.phetolo.Financeapi.dto.AuthResponse;
 import com.phetolo.Financeapi.dto.LoginRequest;
 import com.phetolo.Financeapi.dto.RegisterRequest;
+import com.phetolo.Financeapi.enums.Role;
 import com.phetolo.Financeapi.model.User;
 import com.phetolo.Financeapi.repository.UserRepository;
 import com.phetolo.Financeapi.security.JwtService;
@@ -36,8 +39,6 @@ public class AuthController {
 	
 	@PostMapping("/login")
 	public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request){
-		System.out.println("Logging in....");
-		System.out.println(request.getUsername());
 		
 		try {
 		manager.authenticate(
@@ -45,9 +46,16 @@ public class AuthController {
 		}catch(Exception ex) {
 			ex.printStackTrace();
 		}
-		System.out.println("Token generated");
-		String token = jwtService.generateToken(request.getUsername());
-		System.out.println("Token generated");
+		 org.springframework.security.core.userdetails.User userDetails = Urepo.findByEmail(request.getUsername())
+                 .map(user -> new org.springframework.security.core.userdetails.User(
+                         user.getEmail(),
+                         user.getPassword(),
+                         List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()))
+                 ))
+                 .orElseThrow(() -> new RuntimeException("User not found"));
+
+		String token = jwtService.generateToken(userDetails);
+		
 		return ResponseEntity.ok(new AuthResponse(token));
 	}
 	
@@ -59,7 +67,7 @@ public class AuthController {
 		User user = new User();
 		user.setEmail(request.getUsername());
 		user.setPassword(encodedPass);
-		
+		user.setRole(Role.USER);
 		Urepo.save(user);
 		return ResponseEntity.ok("User registered Successfully");
 	}

@@ -12,6 +12,7 @@ import com.phetolo.Financeapi.dto.TransactionDTO;
 import com.phetolo.Financeapi.enums.TransactionType;
 import com.phetolo.Financeapi.exception.BudgetExceededException;
 import com.phetolo.Financeapi.mapper.TransactionMapper;
+import com.phetolo.Financeapi.model.Budget;
 import com.phetolo.Financeapi.model.Transaction;
 import com.phetolo.Financeapi.model.User;
 import com.phetolo.Financeapi.repository.BudgetRepository;
@@ -30,13 +31,23 @@ public class TransactionServices {
 		this.Brepo=Brepo;
 	}
 	
-	public TransactionDTO addTransaction(Long id, TransactionDTO transaction) throws BudgetExceededException {
-		Optional<User> user = Urepo.findById(id);
+	public TransactionDTO addTransaction(Long userId, TransactionDTO transaction) throws BudgetExceededException {
+		Optional<User> user = Urepo.findById(userId);
+		Optional<Budget> b = Brepo.findById(userId);
+		
+		
+		if(user.isEmpty()) {
+			throw new RuntimeException("Could not find the user: "+ user.get().getName());
+		}
 		Transaction t = TransactionMapper.mapToEntity(transaction);
-		if((calculateBalance(id) + t.getAmount().doubleValue() ) > Brepo.findById(id).get().getMonthlyLimit().doubleValue()) {
+		if(b.isEmpty()) {
+			t.setUser(user.get());
+			
+		}
+		else if((calculateBalance(userId) + t.getAmount().doubleValue() ) > Brepo.findById(userId).get().getMonthlyLimit().doubleValue()) {
 			throw new BudgetExceededException("User: "+ user.get().getName()+" budget exceeded");
 		}
-		t.setUser(user.get());
+		
 		return TransactionMapper.mapToDto(Trepo.save(t));
 		
 	}
