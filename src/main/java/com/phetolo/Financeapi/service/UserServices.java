@@ -1,9 +1,13 @@
 package com.phetolo.Financeapi.service;
 
+
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.phetolo.Financeapi.dto.UpdatedUserDto;
 import com.phetolo.Financeapi.enums.Role;
 import com.phetolo.Financeapi.exception.IllegalEntityException;
 import com.phetolo.Financeapi.exception.UserNotFoundException;
@@ -22,6 +26,7 @@ public class UserServices {
 	
 	public User registerUser(User user) {
 		user.setRole(Role.USER);
+		user.setCreatedAt(LocalDateTime.now());
 		return Urepo.save(user);
 	}
 	
@@ -48,6 +53,17 @@ public class UserServices {
 	public List<User> getAll(){
 		registeredUsers = Urepo.findAll();
 		return registeredUsers;
+	}
+	
+	public User updateUserByAdmin(Long userId,UpdatedUserDto updated) {
+		Optional<User> optionalUser = Urepo.findById(userId);
+		User toUpdate = optionalUser.get();
+		if(updated.getRole()!=null) {
+			toUpdate.setRole(updated.getRole());
+			toUpdate.setActive(updated.isActive());
+		}
+		
+		return Urepo.save(toUpdate);
 	}
 	
 }

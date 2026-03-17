@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.phetolo.Financeapi.dto.BudgetDTO;
-import com.phetolo.Financeapi.exception.UserNotFoundException;
 import com.phetolo.Financeapi.mapper.BudgetMapper;
 import com.phetolo.Financeapi.model.Budget;
 import com.phetolo.Financeapi.model.User;
@@ -32,6 +31,7 @@ public class BudgetService {
 		}
 		Budget budget = BudgetMapper.mapToEntity(b);
 		budget.setUser(user.get());
+		
 		return BudgetMapper.mapToDto(Brepo.save(budget));
 	}
 	

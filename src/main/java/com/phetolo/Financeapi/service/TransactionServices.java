@@ -1,5 +1,7 @@
 package com.phetolo.Financeapi.service;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.YearMonth;
 
 import java.util.List;
@@ -37,17 +39,20 @@ public class TransactionServices {
 		
 		
 		if(user.isEmpty()) {
-			throw new RuntimeException("Could not find the user: "+ user.get().getName());
+			throw new RuntimeException("Could not find the user");
 		}
+		
 		Transaction t = TransactionMapper.mapToEntity(transaction);
 		if(b.isEmpty()) {
 			t.setUser(user.get());
-			
+			Budget budget = new Budget("Default budget, new user.",new BigDecimal(500),YearMonth.now(),user.get());
+			Brepo.save(budget);
 		}
 		else if((calculateBalance(userId) + t.getAmount().doubleValue() ) > Brepo.findById(userId).get().getMonthlyLimit().doubleValue()) {
 			throw new BudgetExceededException("User: "+ user.get().getName()+" budget exceeded");
 		}
 		
+		t.setDate(LocalDate.now());
 		return TransactionMapper.mapToDto(Trepo.save(t));
 		
 	}

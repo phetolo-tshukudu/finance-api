@@ -1,6 +1,7 @@
 package com.phetolo.Financeapi.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.phetolo.Financeapi.dto.UpdatedUserDto;
 import com.phetolo.Financeapi.model.User;
 import com.phetolo.Financeapi.payload.ApiResponse;
 import com.phetolo.Financeapi.security.CustomUserDetailsService;
@@ -72,4 +74,12 @@ public class UserController {
 		ApiResponse<User> response = new ApiResponse<>(HttpStatus.CREATED.value(), "User created", userServices.registerUser(user));
 		return new ResponseEntity<>(response,HttpStatus.CREATED);
     }
+	
+	@PreAuthorize("hasRole('ADMIN')")
+	@PostMapping("/modify/{userId}")
+	public ResponseEntity<ApiResponse<User>> editRole(@PathVariable Long userId,@RequestBody UpdatedUserDto update){
+		User updated = userServices.updateUserByAdmin(userId, update);
+		ApiResponse<User> response = new ApiResponse<User>(HttpStatus.ACCEPTED.value(), "User edited, with new status", updated);
+		return ResponseEntity.ok(response);
+	}
 }
