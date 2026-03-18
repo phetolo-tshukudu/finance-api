@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.phetolo.Financeapi.dto.BudgetDTO;
 import com.phetolo.Financeapi.model.User;
 import com.phetolo.Financeapi.payload.ApiResponse;
-import com.phetolo.Financeapi.repository.BudgetRepository;
+
 import com.phetolo.Financeapi.repository.UserRepository;
 import com.phetolo.Financeapi.service.BudgetService;
 

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.phetolo.Financeapi.dto.StatisticDTO;
 import com.phetolo.Financeapi.enums.TransactionType;
+import com.phetolo.Financeapi.exception.TransactionNotFoundException;
 import com.phetolo.Financeapi.model.Transaction;
 import com.phetolo.Financeapi.repository.TransactionRepository;
 
@@ -21,6 +22,9 @@ public class AnalyticsService {
 		this.Trepo=Trepo;
 	}
 	public StatisticDTO computeStatistics(Long userId) {
+		if(!Trepo.existsByUserId(userId)) {
+			throw new TransactionNotFoundException("Transaction not found for id: "+userId);
+		}
 		List<Transaction> userTransactions = Trepo.findByUserId(userId);
 		DoubleSummaryStatistics stats = userTransactions.stream().collect(Collectors.summarizingDouble(t->t.getAmount().doubleValue()));
 		StatisticDTO summary =new StatisticDTO();

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.phetolo.Financeapi.dto.TransactionDTO;
 import com.phetolo.Financeapi.exception.BudgetExceededException;
+import com.phetolo.Financeapi.exception.TransactionNotFoundException;
 import com.phetolo.Financeapi.model.User;
 import com.phetolo.Financeapi.payload.ApiResponse;
 import com.phetolo.Financeapi.repository.UserRepository;
@@ -35,7 +36,7 @@ public class TransactionController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<ApiResponse<List<TransactionDTO>>> getAll(@AuthenticationPrincipal UserDetails userdetails){
+	public ResponseEntity<ApiResponse<List<TransactionDTO>>> getAll(@AuthenticationPrincipal UserDetails userdetails) throws TransactionNotFoundException{
 		User user = userRepo.getByEmail(userdetails.getUsername());
 		ApiResponse<List<TransactionDTO>> response = new ApiResponse<>(HttpStatus.FOUND.value(), "Transactions found", transactionService.getUserTransactions(user.getId()));
 		return new ResponseEntity<>(response,HttpStatus.FOUND);

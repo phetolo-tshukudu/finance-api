@@ -1,14 +1,11 @@
 package com.phetolo.Financeapi.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,10 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.phetolo.Financeapi.dto.UpdatedUserDto;
 import com.phetolo.Financeapi.model.User;
 import com.phetolo.Financeapi.payload.ApiResponse;
-import com.phetolo.Financeapi.security.CustomUserDetailsService;
+
 import com.phetolo.Financeapi.service.UserServices;
 
-import jakarta.validation.Valid;
+
 
 @RestController
 @RequestMapping("/admin/users")

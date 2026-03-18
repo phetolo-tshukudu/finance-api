@@ -1,12 +1,14 @@
 package com.phetolo.Financeapi.exception;
 
-public class BudgetExceededException extends RuntimeException {
+public class UnauthorizedUserException extends RuntimeException{
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
-	public BudgetExceededException(String message) {
+	
+	public UnauthorizedUserException(String message) {
 		super(message);
 	}
+
 }

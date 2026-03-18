@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 import com.phetolo.Financeapi.dto.TransactionDTO;
 import com.phetolo.Financeapi.enums.TransactionType;
 import com.phetolo.Financeapi.exception.BudgetExceededException;
+import com.phetolo.Financeapi.exception.TransactionNotFoundException;
+import com.phetolo.Financeapi.exception.UnauthorizedUserException;
+import com.phetolo.Financeapi.exception.UserNotFoundException;
 import com.phetolo.Financeapi.mapper.TransactionMapper;
 import com.phetolo.Financeapi.model.Budget;
 import com.phetolo.Financeapi.model.Transaction;
@@ -39,7 +42,7 @@ public class TransactionServices {
 		
 		
 		if(user.isEmpty()) {
-			throw new RuntimeException("Could not find the user");
+			throw new UserNotFoundException("Could not find the user");
 		}
 		
 		Transaction t = TransactionMapper.mapToEntity(transaction);
@@ -57,12 +60,18 @@ public class TransactionServices {
 		
 	}
 	
-	public List<TransactionDTO> getUserTransactions(Long userId){
+	public List<TransactionDTO> getUserTransactions(Long userId) throws TransactionNotFoundException{
+		if(!Trepo.existsByUserId(userId)) {
+			throw new TransactionNotFoundException("Transaction does not exist!");
+		}
 		userTransactions = Trepo.findByUserId(userId);
 		return userTransactions.stream().map(TransactionMapper::mapToDto).toList();
 	}
 	
 	public List<TransactionDTO> getTransactionsByMonth(Long userId, YearMonth month) {
+		if(!Trepo.existsByUserId(userId)) {
+			throw new TransactionNotFoundException("Transaction does not exist!");
+		}
 	    int year = month.getYear();
 	    int m = month.getMonthValue();
 	    return Trepo.findByUserIdAndMonth(userId, m, year).stream().map(TransactionMapper::mapToDto).toList();
@@ -82,10 +91,13 @@ public class TransactionServices {
 		return (calculateTotalIncome(userId)-calculateTotalExpense(userId));
 	}
 	
-	public void deleteTransaction(Long userId,Long transactionId) {
+	public void deleteTransaction(Long userId,Long transactionId)  {
+		if(!Trepo.existsById(transactionId)) {
+			throw new TransactionNotFoundException("Transaction not found for id: "+transactionId);
+		}
 		Optional<Transaction> transaction = Trepo.findById(transactionId);
 		if(transaction.get().getUser().getId()!=userId) {
-			throw new RuntimeException("Unauthorized");
+			throw new UnauthorizedUserException("Unauthorized");
 		}
 		Trepo.delete(transaction.get());
 	}

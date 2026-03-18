@@ -18,5 +18,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     List<Transaction> findByYearAndMonth(@Param("year") int year, @Param("month") int month);
 	@Query("SELECT t FROM Transaction t WHERE t.user.id = :userId AND FUNCTION('MONTH', t.date) = :month AND FUNCTION('YEAR', t.date) = :year")
 	List<Transaction> findByUserIdAndMonth(@Param("userId") Long userId, @Param("month") int month, @Param("year") int year);
+	boolean existsByUserId(Long userId);
 	
 }

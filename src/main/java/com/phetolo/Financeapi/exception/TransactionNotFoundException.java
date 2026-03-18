@@ -1,12 +1,12 @@
 package com.phetolo.Financeapi.exception;
 
-public class BudgetExceededException extends RuntimeException {
+public class TransactionNotFoundException extends RuntimeException {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public BudgetExceededException(String message) {
+	public TransactionNotFoundException(String message) {
 		super(message);
 	}
 }

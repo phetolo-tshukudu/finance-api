@@ -31,17 +31,23 @@ public class UserServices {
 	}
 	
 	public void deactivateUser(User user) throws IllegalEntityException {
-		if(Urepo.existsByEmail(user.getEmail())) {
-			throw new UserNotFoundException("Cannot Deelete. "+user+" does not exists");
+		if(!Urepo.existsByEmail(user.getEmail())) {
+			throw new UserNotFoundException("Cannot Delete. "+user+" does not exists");
 		}
 		Urepo.delete(user);
 	}
 	
 	public User findUserByEmail(String email) {
+		if(!Urepo.existsByEmail(email)) {
+			throw new UserNotFoundException("User not found for email: "+ email);
+		}
 		return Urepo.findByEmail(email).get();
 	}
 	
 	public User findById(Long id) {
+		if(!Urepo.existsById(id)) {
+			throw new UserNotFoundException("User not found for ID: "+ id);
+		}
 		return Urepo.findById(id).get();
 	}
 	
@@ -56,6 +62,10 @@ public class UserServices {
 	}
 	
 	public User updateUserByAdmin(Long userId,UpdatedUserDto updated) {
+		if(!Urepo.existsById(userId)) {
+			throw new UserNotFoundException("User not found for ID: "+ userId);
+		}
+		
 		Optional<User> optionalUser = Urepo.findById(userId);
 		User toUpdate = optionalUser.get();
 		if(updated.getRole()!=null) {

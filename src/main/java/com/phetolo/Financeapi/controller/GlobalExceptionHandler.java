@@ -1,8 +1,13 @@
-package com.phetolo.Financeapi.exception;
+package com.phetolo.Financeapi.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.phetolo.Financeapi.exception.BudgetExceededException;
+import com.phetolo.Financeapi.exception.TransactionNotFoundException;
+import com.phetolo.Financeapi.exception.UnauthorizedUserException;
+import com.phetolo.Financeapi.exception.UserNotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -45,5 +50,21 @@ public class GlobalExceptionHandler {
         response.put("errors", errors);
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(UnauthorizedUserException.class)
+    public ResponseEntity<Map<String,Object>> handleAuthorization(UnauthorizedUserException ex){
+    	Map<String,Object> error = new HashMap<>();
+    	error.put("timestamp", LocalDateTime.now());
+    	error.put("status", HttpStatus.FORBIDDEN);
+    	error.put("message", ex.getMessage());
+    	return ResponseEntity.ok(error);
+    }
+    @ExceptionHandler(TransactionNotFoundException.class)
+    public ResponseEntity<Map<String,Object>> handleTransaction(TransactionNotFoundException ex){
+    	Map<String,Object> error = new HashMap<>();
+    	error.put("timestamp", LocalDateTime.now());
+    	error.put("status", HttpStatus.FORBIDDEN);
+    	error.put("message", ex.getMessage());
+    	return ResponseEntity.ok(error);
     }
 }

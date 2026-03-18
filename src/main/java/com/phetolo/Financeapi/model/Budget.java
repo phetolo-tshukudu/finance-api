@@ -19,7 +19,7 @@ public class Budget {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
-	private String Category;
+	private String category;
 	private BigDecimal monthlyLimit;
 	private YearMonth month;
 	@ManyToOne
@@ -28,13 +28,13 @@ public class Budget {
 	
 	public Budget(Long id, String category, BigDecimal monthlyLimit, YearMonth month, User user) {
 		this.id = id;
-		Category = category;
+		this.category = category;
 		this.monthlyLimit = monthlyLimit;
 		this.month = month;
 		this.user = user;
 	}
 	public Budget(String category, BigDecimal monthlyLimit, YearMonth month, User user) {
-		Category = category;
+		this.category = category;
 		this.monthlyLimit = monthlyLimit;
 		this.month = month;
 		this.user = user;
@@ -49,10 +49,10 @@ public class Budget {
 		this.id = id;
 	}
 	public String getCategory() {
-		return Category;
+		return category;
 	}
 	public void setCategory(String category) {
-		Category = category;
+		this.category = category;
 	}
 	public BigDecimal getMonthlyLimit() {
 		return monthlyLimit;
