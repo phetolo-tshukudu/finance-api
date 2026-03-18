@@ -31,7 +31,7 @@ public class BudgetService {
 		}
 		Optional<User> user = Urepo.findById(userId);
 		
-		Budget existing = Brepo.findByUserIdAndCategoryAndMonth(userId, b.getCategory(), b.getMonth());
+		Budget existing = Brepo.findByUser_IdAndCategoryAndMonth(userId, b.getCategory(), b.getMonth());
 		if(existing!= null) {
 			throw new IllegalEntityException("The Budget already exists");
 		}
@@ -42,7 +42,7 @@ public class BudgetService {
 	}
 	
 	public List<BudgetDTO> getUserBudgets(Long userId){
-		budgets = Brepo.findByUserId(userId);
+		budgets = Brepo.findAllByUser_Id(userId);
 		return budgets.stream().map(BudgetMapper::mapToDto).toList();
 	}
 	

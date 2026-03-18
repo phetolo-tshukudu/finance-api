@@ -40,6 +40,7 @@ public class Budget {
 		this.user = user;
 	}
 	
+	public Budget() {}
 	
 	
 	public Long getId() {

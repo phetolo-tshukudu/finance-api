@@ -17,6 +17,7 @@ import com.phetolo.Financeapi.dto.AuthResponse;
 import com.phetolo.Financeapi.dto.LoginRequest;
 import com.phetolo.Financeapi.dto.RegisterRequest;
 import com.phetolo.Financeapi.enums.Role;
+import com.phetolo.Financeapi.exception.UserNotFoundException;
 import com.phetolo.Financeapi.model.User;
 import com.phetolo.Financeapi.repository.UserRepository;
 import com.phetolo.Financeapi.security.JwtService;
@@ -49,7 +50,7 @@ public class AuthController {
                          user.getPassword(),
                          List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()))
                  ))
-                 .orElseThrow(() -> new RuntimeException("User not found"));
+                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
 		String token = jwtService.generateToken(userDetails);
 		

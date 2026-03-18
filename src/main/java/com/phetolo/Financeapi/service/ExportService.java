@@ -18,8 +18,8 @@ public class ExportService {
 	}
 	
 	public String exportTransactionsToCsv(Long userId) {
-		List<Transaction> transactions = Trepo.findByUserId(userId);
-		if(!Trepo.existsByUserId(userId)) {
+		List<Transaction> transactions = Trepo.findByUser_Id(userId);
+		if(!Trepo.existsByUser_Id(userId)) {
 			throw new TransactionNotFoundException("Transactions do not exist!");
 		}
 		StringBuilder csv = new StringBuilder();

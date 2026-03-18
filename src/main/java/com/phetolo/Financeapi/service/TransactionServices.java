@@ -38,21 +38,23 @@ public class TransactionServices {
 	
 	public TransactionDTO addTransaction(Long userId, TransactionDTO transaction) throws BudgetExceededException {
 		Optional<User> user = Urepo.findById(userId);
-		Optional<Budget> b = Brepo.findById(userId);
+		Optional<Budget> b = Brepo.findByUser_Id(userId);
 		
 		
-		if(user.isEmpty()) {
+		if(!user.isPresent()) {
 			throw new UserNotFoundException("Could not find the user");
 		}
 		
 		Transaction t = TransactionMapper.mapToEntity(transaction);
-		if(b.isEmpty()) {
+		if(!b.isPresent()) {
 			t.setUser(user.get());
 			Budget budget = new Budget("Default budget, new user.",new BigDecimal(500),YearMonth.now(),user.get());
 			Brepo.save(budget);
 		}
-		else if((calculateBalance(userId) + t.getAmount().doubleValue() ) > Brepo.findById(userId).get().getMonthlyLimit().doubleValue()) {
-			throw new BudgetExceededException("User: "+ user.get().getName()+" budget exceeded");
+		else if(transaction.getType().equals(TransactionType.EXPENSE)){
+			double total = calculateTotalExpense(user.get().getId()) + transaction.getAmount().doubleValue();
+			if(total > b.get().getMonthlyLimit().doubleValue())
+				throw new BudgetExceededException("Budget exceeded for "+ "User: "+ user.get().getEmail());
 		}
 		
 		t.setDate(LocalDate.now());
@@ -61,30 +63,30 @@ public class TransactionServices {
 	}
 	
 	public List<TransactionDTO> getUserTransactions(Long userId) throws TransactionNotFoundException{
-		if(!Trepo.existsByUserId(userId)) {
+		if(!Trepo.existsByUser_Id(userId)) {
 			throw new TransactionNotFoundException("Transaction does not exist!");
 		}
-		userTransactions = Trepo.findByUserId(userId);
+		userTransactions = Trepo.findByUser_Id(userId);
 		return userTransactions.stream().map(TransactionMapper::mapToDto).toList();
 	}
 	
 	public List<TransactionDTO> getTransactionsByMonth(Long userId, YearMonth month) {
-		if(!Trepo.existsByUserId(userId)) {
+		if(!Trepo.existsByUser_Id(userId)) {
 			throw new TransactionNotFoundException("Transaction does not exist!");
 		}
 	    int year = month.getYear();
 	    int m = month.getMonthValue();
-	    return Trepo.findByUserIdAndMonth(userId, m, year).stream().map(TransactionMapper::mapToDto).toList();
+	    return Trepo.findByUser_IdAndMonth(userId, m, year).stream().map(TransactionMapper::mapToDto).toList();
 	}
 	
 	public Double calculateTotalIncome(Long userId) {
 
-		return Trepo.findByuserIdAndType(userId, TransactionType.INCOME).stream().mapToDouble(t->t.getAmount().doubleValue()).sum();
+		return Trepo.findByUser_IdAndType(userId, TransactionType.INCOME).stream().mapToDouble(t->t.getAmount().doubleValue()).sum();
 	}
 	
 	public Double calculateTotalExpense(Long userId) {
 
-		return Trepo.findByuserIdAndType(userId, TransactionType.EXPENSE).stream().mapToDouble(t->t.getAmount().doubleValue()).sum();
+		return Trepo.findByUser_IdAndType(userId, TransactionType.EXPENSE).stream().mapToDouble(t->t.getAmount().doubleValue()).sum();
 	}
 	
 	public Double calculateBalance(Long userId) {
