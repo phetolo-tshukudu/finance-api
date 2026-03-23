@@ -46,8 +46,9 @@ public class TransactionServices {
 		}
 		
 		Transaction t = TransactionMapper.mapToEntity(transaction);
+		t.setUser(user.get());
 		if(!b.isPresent()) {
-			t.setUser(user.get());
+			
 			Budget budget = new Budget("Default budget, new user.",new BigDecimal(500),YearMonth.now(),user.get());
 			Brepo.save(budget);
 		}

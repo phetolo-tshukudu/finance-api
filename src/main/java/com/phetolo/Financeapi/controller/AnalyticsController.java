@@ -15,6 +15,7 @@ import com.phetolo.Financeapi.service.AnalyticsService;
 import com.phetolo.Financeapi.payload.ApiResponse;
 import com.phetolo.Financeapi.repository.UserRepository;
 import com.phetolo.Financeapi.dto.StatisticDTO;
+import com.phetolo.Financeapi.exception.UserNotFoundException;
 import com.phetolo.Financeapi.model.User;
 @RestController
 @RequestMapping("/transactions/analytics")
@@ -31,6 +32,9 @@ public class AnalyticsController {
 	@GetMapping("/statistics")
 	public ResponseEntity<ApiResponse<StatisticDTO>> getStatistics(@AuthenticationPrincipal UserDetails userdetails){
 		User user = userRepo.getByEmail(userdetails.getUsername());
+		if(user==null) {
+			throw new UserNotFoundException("The username "+userdetails.getUsername()+" does not exist");
+		}
 		StatisticDTO stats = analysis.computeStatistics(user.getId());
 		ApiResponse<StatisticDTO> response = new ApiResponse<>(HttpStatus.CREATED.value(), "Transaction statistics created!", stats);
 		

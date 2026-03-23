@@ -25,6 +25,7 @@ public class AnalyticsService {
 		if(!Trepo.existsByUser_Id(userId)) {
 			throw new TransactionNotFoundException("Transaction not found for id: "+userId);
 		}
+		
 		List<Transaction> userTransactions = Trepo.findByUser_Id(userId);
 		DoubleSummaryStatistics stats = userTransactions.stream().collect(Collectors.summarizingDouble(t->t.getAmount().doubleValue()));
 		StatisticDTO summary =new StatisticDTO();

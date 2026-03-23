@@ -3,6 +3,10 @@ package com.phetolo.Financeapi.model;
 import java.math.BigDecimal;
 import java.time.YearMonth;
 
+import com.phetolo.Financeapi.mapper.YearMonthConverter;
+
+import jakarta.persistence.Convert;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,9 +15,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 @Entity
-@Table(name="Budget")
+@Table(name="Budget",uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"user_id", "month"})
+    })
 public class Budget {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -21,6 +28,7 @@ public class Budget {
 	
 	private String category;
 	private BigDecimal monthlyLimit;
+	@Convert(converter=YearMonthConverter.class)
 	private YearMonth month;
 	@ManyToOne
 	@JoinColumn(name ="user_id")
