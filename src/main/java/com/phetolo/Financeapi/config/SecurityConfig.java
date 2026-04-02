@@ -29,7 +29,8 @@ public class SecurityConfig {
        
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
-
+    
+    //Filters out all the requests are by authenticated users, only one's permitted.
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
