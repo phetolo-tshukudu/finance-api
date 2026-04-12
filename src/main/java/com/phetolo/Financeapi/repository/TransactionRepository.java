@@ -1,6 +1,7 @@
 package com.phetolo.Financeapi.repository;
 
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,5 +20,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 	@Query("SELECT t FROM Transaction t WHERE t.user.id = :userId AND FUNCTION('MONTH', t.date) = :month AND FUNCTION('YEAR', t.date) = :year")
 	List<Transaction> findByUser_IdAndMonth(@Param("userId") Long userId, @Param("month") int month, @Param("year") int year);
 	boolean existsByUser_Id(Long userId);
-	
+	//List<Transaction> findByUser_IdAndCategorAndType(Long userId,String Category,TransactionType type);
+	List<Transaction> findByUser_IdAndDateBetween(Long userId, LocalDate previous,LocalDate cuurent);
 }

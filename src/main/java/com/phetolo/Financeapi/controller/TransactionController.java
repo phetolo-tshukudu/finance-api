@@ -1,5 +1,6 @@
 package com.phetolo.Financeapi.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -45,7 +46,24 @@ public class TransactionController {
 	@PostMapping
 	public ResponseEntity<ApiResponse<TransactionDTO>> addTransactions(@AuthenticationPrincipal UserDetails userdetails,@Valid @RequestBody TransactionDTO t) throws BudgetExceededException {
 		User user = userRepo.getByEmail(userdetails.getUsername());
-		ApiResponse<TransactionDTO> response = new ApiResponse<>(HttpStatus.CREATED.value(), "Transaction added", transactionService.addTransaction(user.getId(), t));
+		TransactionDTO dto = transactionService.addTransaction(user.getId(), t);
+		if(dto.getId()==null) {
+			ApiResponse<TransactionDTO> response = new ApiResponse<>(HttpStatus.OK.value(), "Transaction could not be added, expenses exceed income.", transactionService.addTransaction(user.getId(), t));
+			return new ResponseEntity<>(response,HttpStatus.CREATED);
+		}
+		ApiResponse<TransactionDTO> response = new ApiResponse<>(HttpStatus.OK.value(), "Transaction added", transactionService.addTransaction(user.getId(), t));
+		return new ResponseEntity<>(response,HttpStatus.CREATED);
+	}
+	
+	@PostMapping("/ai")
+	public ResponseEntity<ApiResponse<TransactionDTO>> addTransactionsWithAi(@AuthenticationPrincipal UserDetails userdetails,@Valid @RequestBody TransactionDTO t){
+		User user = userRepo.getByEmail(userdetails.getUsername());
+		TransactionDTO dto = transactionService.addTransactionWithAi(user.getId(), t);
+		if(dto.getId()==null) {
+			ApiResponse<TransactionDTO> response = new ApiResponse<>(HttpStatus.OK.value(), "Transaction could not be added, expenses exceed income.", transactionService.addTransaction(user.getId(), t));
+			return new ResponseEntity<>(response,HttpStatus.CREATED);
+		}
+		ApiResponse<TransactionDTO> response = new ApiResponse<>(HttpStatus.OK.value(), "Transaction added", transactionService.addTransaction(user.getId(), t));
 		return new ResponseEntity<>(response,HttpStatus.CREATED);
 	}
 	

@@ -17,9 +17,9 @@ public class TransactionDTO {
 	private BigDecimal amount;
 	@NotNull(message="Transaction Type needed")
 	private TransactionType type;
-	@NotBlank(message="Category cannot be empty")
-	private String Category;
 	
+	private String Category;
+	@NotBlank(message="Description cannot be empty")
 	private String description;
 	
 	private LocalDate date;

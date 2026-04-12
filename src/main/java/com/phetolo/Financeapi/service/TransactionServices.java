@@ -29,17 +29,24 @@ public class TransactionServices {
 	private UserRepository Urepo;
 	private BudgetRepository Brepo;
 	private List<Transaction> userTransactions;
+	private AIService aiservice;
 	
-	public TransactionServices(TransactionRepository Trepo, UserRepository Urepo,BudgetRepository Brepo) {
+	public TransactionServices(TransactionRepository Trepo, UserRepository Urepo,BudgetRepository Brepo,AIService aiservice) {
 		this.Trepo = Trepo;
 		this.Urepo = Urepo;
 		this.Brepo=Brepo;
+		this.aiservice = aiservice;
 	}
 	
 	public TransactionDTO addTransaction(Long userId, TransactionDTO transaction) throws BudgetExceededException {
 		Optional<User> user = Urepo.findById(userId);
 		Optional<Budget> b = Brepo.findByUser_Id(userId);
 		
+		if(transaction.getType()==TransactionType.EXPENSE) {
+			if(calculateTotalExpense(userId)>=calculateTotalIncome(userId))
+				return new TransactionDTO();
+		}
+			
 		
 		if(!user.isPresent()) {
 			throw new UserNotFoundException("Could not find the user");
@@ -61,6 +68,13 @@ public class TransactionServices {
 		t.setDate(LocalDate.now());
 		return TransactionMapper.mapToDto(Trepo.save(t));
 		
+	}
+	
+	public TransactionDTO addTransactionWithAi(Long userId,TransactionDTO dto) {
+		if(dto!=null) {
+			dto.setCategory(aiservice.categorizeTransaction(dto.getDescription()));
+		}
+		return addTransaction(userId, dto);
 	}
 	
 	public List<TransactionDTO> getUserTransactions(Long userId) throws TransactionNotFoundException{

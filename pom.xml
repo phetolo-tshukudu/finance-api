@@ -2,6 +2,10 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
          http://maven.apache.org/maven-v4_0_0.xsd">
+    <properties>
+        <spring-ai-bom-scope>import</spring-ai-bom-scope>
+    </properties>
+
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.phetolo</groupId>
@@ -14,7 +18,17 @@
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.2.2</version> <!-- or the latest compatible version -->
     </parent>
-
+	<dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.ai</groupId>
+                <artifactId>spring-ai-bom</artifactId>
+                <version>1.0.0</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
         <!-- Web -->
         <dependency>
@@ -72,6 +86,14 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
+        <!-- AI dependency-->
+	<dependency>
+        <groupId>org.springframework.ai</groupId>
+        <artifactId>spring-ai-starter-model-openai</artifactId>
+    </dependency>
+        
+  
+
     </dependencies>
 
     <build>
