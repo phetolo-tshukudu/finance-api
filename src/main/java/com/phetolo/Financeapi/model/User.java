@@ -10,11 +10,12 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 
 
 @Entity
-@Table(name="User")
+@Table(name="User",indexes= {@Index(name="email_index",columnList = "email")})
 public class User {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

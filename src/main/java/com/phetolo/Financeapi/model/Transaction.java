@@ -7,15 +7,18 @@ import com.phetolo.Financeapi.enums.TransactionStatus;
 import com.phetolo.Financeapi.enums.TransactionType;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="Transaction")
+@Table(name="Transaction",indexes= {@Index(name = "index_userId_date",columnList = "user_id,date")})//indexes user_id and date
 public class Transaction {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -23,7 +26,7 @@ public class Transaction {
 	
 	private BigDecimal amount;
 	private TransactionType type;
-	private String Category;
+	private Category category;
 	private String description;
 	private LocalDate date;
 	private TransactionStatus status;
@@ -31,23 +34,23 @@ public class Transaction {
 	@JoinColumn(name ="user_id")
 	private User user;
 	
-	public Transaction(Long id, BigDecimal amount, TransactionType type, String category, String description,
+	public Transaction(Long id, BigDecimal amount, TransactionType type, Category category, String description,
 			LocalDate date, TransactionStatus status, User user) {
 		this.id = id;
 		this.amount = amount;
 		this.type = type;
-		Category = category;
+		this.category = category;
 		this.description = description;
 		this.date = date;
 		this.status = status;
 		this.user = user;
 	}
 
-	public Transaction(BigDecimal amount, TransactionType type, String category, String description, LocalDate date,
+	public Transaction(BigDecimal amount, TransactionType type, Category category, String description, LocalDate date,
 			TransactionStatus status, User user) {
 		this.amount = amount;
 		this.type = type;
-		Category = category;
+		this.category = category;
 		this.description = description;
 		this.date = date;
 		this.status = status;
@@ -85,12 +88,12 @@ public class Transaction {
 		this.type = type;
 	}
 
-	public String getCategory() {
-		return Category;
+	public Category getCategory() {
+		return category;
 	}
 
-	public void setCategory(String category) {
-		Category = category;
+	public void setCategory(Category category) {
+		this.category = category;
 	}
 
 	public String getDescription() {

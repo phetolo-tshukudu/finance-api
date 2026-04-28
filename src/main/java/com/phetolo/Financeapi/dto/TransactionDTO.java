@@ -5,6 +5,7 @@ import java.time.LocalDate;
 
 import com.phetolo.Financeapi.enums.TransactionStatus;
 import com.phetolo.Financeapi.enums.TransactionType;
+import com.phetolo.Financeapi.model.Category;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -18,7 +19,7 @@ public class TransactionDTO {
 	@NotNull(message="Transaction Type needed")
 	private TransactionType type;
 	
-	private String Category;
+	private Category category;
 	@NotBlank(message="Description cannot be empty")
 	private String description;
 	
@@ -26,22 +27,22 @@ public class TransactionDTO {
 	@NotNull(message="Transaction status needed")
 	private TransactionStatus status;
 	
-	public TransactionDTO(Long id, BigDecimal amount, TransactionType type, String category, String description,
+	public TransactionDTO(Long id, BigDecimal amount, TransactionType type, Category category, String description,
 			LocalDate date, TransactionStatus status) {
 		this.id = id;
 		this.amount = amount;
 		this.type = type;
-		Category = category;
+		this.category = category;
 		this.description = description;
 		this.date = date;
 		this.status = status;
 	}
 
-	public TransactionDTO(BigDecimal amount, TransactionType type, String category, String description, LocalDate date,
+	public TransactionDTO(BigDecimal amount, TransactionType type, Category category, String description, LocalDate date,
 			TransactionStatus status) {
 		this.amount = amount;
 		this.type = type;
-		Category = category;
+		this.category = category;
 		this.description = description;
 		this.date = date;
 		this.status = status;
@@ -74,12 +75,12 @@ public class TransactionDTO {
 		this.type = type;
 	}
 
-	public String getCategory() {
-		return Category;
+	public Category getCategory() {
+		return category;
 	}
 
-	public void setCategory(String category) {
-		Category = category;
+	public void setCategory(Category category) {
+		this.category = category;
 	}
 
 	public String getDescription() {
